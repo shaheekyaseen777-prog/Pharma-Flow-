@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PharmaFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--t:#0f766e;--t2:#14b8a6;--bg:#f2f8f8;--c:#fff;--tx:#0b2540;--mu:#5b6b7b;--bd:#d9e6e8;--rd:#dc2626}
+html.large{font-size:19px}
+html.contrast{--tx:#000;--mu:#1a1a1a;--bd:#000;--bg:#fff;--t:#004d47}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:1rem}
+h1,h2,h3,h4{font-family:Sora,Inter,sans-serif;margin:.2em 0}
+p{margin:.4em 0}small{color:var(--mu);font-size:.82rem}
+button{font:inherit;cursor:pointer}
+.row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}.between{justify-content:space-between}.grow{flex:1}
+.stack{display:grid;gap:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1rem}.grid.s{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+.card{background:var(--c);border:1px solid var(--bd);border-radius:16px;padding:1.1rem;box-shadow:0 2px 8px #0b254010}
+.btn{background:var(--t);color:#fff;border:0;border-radius:10px;padding:.6rem 1.1rem;font-weight:600}
+.btn.ghost{background:transparent;color:var(--t);border:1.5px solid var(--t)}.btn.danger{background:var(--rd)}
+.btn.sm{padding:.35rem .75rem;font-size:.85rem}.btn:disabled{opacity:.45;cursor:not-allowed}
+.link{background:none;border:0;color:var(--t);text-decoration:underline;padding:.2rem}
+.icon{background:var(--c);border:1px solid var(--bd);border-radius:10px;width:38px;height:38px;position:relative;color:var(--tx)}
+.input,input:not([type=checkbox]),select,textarea{font:inherit;padding:.55rem .7rem;border:1.5px solid var(--bd);border-radius:10px;background:var(--c);color:var(--tx);width:100%}
+input[type=checkbox]{width:auto}
+.search{display:flex;align-items:center;gap:.5rem;border:1.5px solid var(--bd);border-radius:12px;padding:.2rem .6rem;background:var(--c);margin-top:.8rem}
+.search input{border:0;outline:0;flex:1}
+.badge{display:inline-block;background:#e0f2f1;color:var(--t);border-radius:99px;padding:.1rem .6rem;font-size:.75rem;font-weight:600;margin:.1rem}
+.badge.demo{background:#fef3c7;color:#92400e}.badge.Upcoming,.badge.verified{background:#dcfce7;color:#166534}.badge.Completed{background:#dbeafe;color:#1e40af}
+.badge.Cancelled,.badge.unverified{background:#fee2e2;color:#991b1b}.badge.unknown{background:#e5e7eb;color:#374151}
+.notice{background:#fff8e1;border:1px solid #f5d98a;border-radius:10px;padding:.6rem .8rem;font-size:.88rem;margin:.4rem 0}
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap}
+.tab{background:var(--c);border:1.5px solid var(--bd);border-radius:99px;padding:.35rem .9rem;color:var(--tx)}.tab.on{background:var(--t);color:#fff;border-color:var(--t)}.tab:disabled{opacity:.4;text-decoration:line-through}
+.opt{display:block;width:100%;text-align:left;background:var(--c);border:1.5px solid var(--bd);border-radius:12px;padding:.8rem;color:var(--tx)}.opt.on{border-color:var(--t);background:#e6f6f4}.opt:disabled{opacity:.5}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:.45rem;border-bottom:1px solid var(--bd);vertical-align:top}
+label{display:grid;gap:.3rem;font-weight:500}label.row{display:flex}
+.stars{color:#d97706;font-weight:600}
+.why{background:#f0fdfa;border-radius:10px;padding:.5rem .5rem .5rem 1.4rem;font-size:.82rem;margin:.5rem 0 0}.why b{margin-left:-.9rem}
+.chips{display:flex;gap:.3rem;flex-wrap:wrap;margin:.3rem 0}
+.bar{background:#e2eceb;border-radius:99px;height:8px}.bar i{display:block;height:100%;background:var(--t2);border-radius:99px}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap}.st{padding:.3rem .7rem;border-radius:99px;background:#e2eceb;font-size:.8rem}.st.on{background:var(--t);color:#fff}.st.done{background:#99e0d6}
+.app{display:flex;min-height:100vh}
+.side{width:250px;background:var(--c);border-right:1px solid var(--bd);padding:1rem;display:flex;flex-direction:column;gap:.3rem;position:sticky;top:0;height:100vh;flex-shrink:0}
+.brand{display:flex;gap:.6rem;align-items:center;margin-bottom:1rem}.brand small{display:block}
+.nav{background:none;border:0;text-align:left;padding:.65rem .8rem;border-radius:10px;color:var(--tx);display:flex;gap:.6rem;align-items:center}.nav.on{background:var(--t);color:#fff}
+.side .note{margin-top:auto;font-size:.75rem;color:var(--mu)}
+.main{flex:1;min-width:0}.top{display:flex;align-items:center;gap:.6rem;padding:.8rem 1.2rem;background:var(--c);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:10}
+.top select{width:auto}.top h1{font-size:1.3rem;margin:0}.burger{display:none}
+.dot{position:absolute;top:-6px;right:-6px;background:var(--rd);color:#fff;border-radius:99px;font-size:.65rem;padding:0 5px}
+.content{padding:1.2rem;max-width:1200px;margin:auto}.fade{animation:fd .25s}@keyframes fd{from{opacity:0;transform:translateY(12px)}}
+.panel{position:absolute;right:1rem;top:64px;width:min(380px,92vw);z-index:30;max-height:70vh;overflow:auto}
+.nitem{display:flex;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--bd)}.pip{width:8px;height:8px;border-radius:50%;background:transparent;margin-top:.5rem;flex-shrink:0}.nitem.un .pip{background:var(--t2)}
+.hero{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:linear-gradient(135deg,#e6f6f4,#fff)}.hero>div:first-child{flex:1;min-width:260px}
+.profile{display:grid;gap:.2rem;justify-items:center;font-size:.85rem}.avatar{width:54px;height:54px;border-radius:50%;background:var(--t);color:#fff;display:grid;place-items:center;font-weight:700}
+.stat{display:flex;gap:.8rem;align-items:center}.stat b{font-size:1.6rem;display:block;font-family:Sora}.ic{font-size:1.5rem}
+.overlay{position:fixed;inset:0;background:#0b254099;display:grid;place-items:center;z-index:40;padding:1rem;animation:fd .2s}
+.modal{background:var(--c);border-radius:16px;padding:1.2rem;width:min(560px,100%);max-height:88vh;overflow:auto;animation:fd .25s}.mh{display:flex;justify-content:space-between;align-items:center}
+.map{position:relative;height:200px;background:#dff3ee;border-radius:12px;overflow:hidden}.road{position:absolute;background:#fff}.pin{position:absolute;left:calc(40% - 12px);top:calc(55% - 30px);font-size:2rem}.tag{position:absolute;left:8px;bottom:8px;background:#fff;padding:.1rem .5rem;border-radius:8px;font-size:.75rem}
+.chat{display:grid;gap:.8rem}.msgs{height:50vh;overflow:auto;display:flex;flex-direction:column;gap:.5rem;padding:.5rem;background:var(--bg);border-radius:12px}
+.bub{max-width:80%;padding:.6rem .9rem;border-radius:14px}.bub.me{align-self:flex-end;background:var(--t);color:#fff}.bub.bot{background:var(--c);border:1px solid var(--bd)}
+.typing{display:flex;gap:4px}.typing span{width:7px;height:7px;border-radius:50%;background:var(--mu);animation:bn 1s infinite}.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}@keyframes bn{50%{transform:translateY(-5px)}}
+.toasts{position:fixed;right:1rem;bottom:1rem;display:grid;gap:.5rem;z-index:99}.toast{background:var(--tx);color:#fff;padding:.7rem 1rem;border-radius:10px;animation:fd .25s;max-width:320px}
+.intro{position:fixed;inset:0;background:linear-gradient(135deg,#0f766e,#0b2540);color:#fff;display:grid;place-items:center;text-align:center;z-index:100;transition:opacity .6s}.intro.out{opacity:0}
+.intro h1{font-size:3rem;animation:up .8s .6s backwards}.intro p{animation:fd 1s 1.4s backwards}.intro p+p{animation-delay:2.2s}
+.skip{position:absolute;top:1rem;right:1rem;background:#ffffff30;color:#fff;border:0;border-radius:99px;padding:.4rem 1rem}
+.prog{width:260px;height:4px;background:#ffffff40;border-radius:9px;margin:1.5rem auto 0;overflow:hidden}.prog i{display:block;height:100%;background:#fff;animation:pg 4.8s linear}
+@keyframes up{from{opacity:0;transform:translateY(20px)}}@keyframes pg{from{width:0}}
+.lg path{stroke-dasharray:1}.lg.anim{animation:pop .6s}.lg.anim path{animation:dr 1.6s ease-in-out infinite alternate}@keyframes dr{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}@keyframes pop{from{transform:scale(.5);opacity:0}}
+.auth{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}.auth .l{background:linear-gradient(135deg,#0f766e,#0b2540);color:#fff;display:grid;align-content:center;justify-items:center;text-align:center;padding:2rem}
+.auth .r{display:grid;place-items:center;padding:2rem}.auth form{display:grid;gap:.8rem;width:min(400px,100%)}
+@media(max-width:800px){.side{position:fixed;left:-270px;z-index:30;transition:left .25s}.side.open{left:0}.burger{display:block}.auth{grid-template-columns:1fr}.auth .l{padding:1.5rem}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<script>
+// ===== DATA (all FICTIONAL demonstration data) =====
+function A(code){const r=[];for(const l of code){if(l==="v")r.push("verified");if(l==="u")r.push("unverified");if(l==="?")r.push("unknown");}return r;}
+const SPEC=["Cardiology","Dermatology","Pediatrics","Orthopedics","Neurology","ENT","General Medicine"];
+const LOCS=["Chengalpattu","Tambaram","Chennai","Kanchipuram"];
+const LANGS=["English","Tamil","Hindi","Telugu","Malayalam","Kannada"];
+const ACCESS=["Wheelchair accessibility","Ramps and lifts","Accessible washrooms","Sign-language assistance","Hearing assistance","Visual assistance"];
+const ALIAS={heart:"Cardiology",skin:"Dermatology",child:"Pediatrics",kids:"Pediatrics",bone:"Orthopedics",joint:"Orthopedics",nerve:"Neurology",ear:"ENT",throat:"ENT",family:"General Medicine"};
+const HOSP=[
+{id:"h1",name:"Lotus Care Hospital",loc:"Chengalpattu",specs:["Cardiology","General Medicine","Pediatrics"],rating:4.6,reviews:312,services:["Pharmacy","Laboratory","Help desk"],access:A("vvv?uv")},
+{id:"h2",name:"Riverbend Medical Centre",loc:"Tambaram",specs:["Orthopedics","Neurology","ENT"],rating:4.4,reviews:208,services:["Imaging centre","Pharmacy","Cafeteria"],access:A("vu?vv?")},
+{id:"h3",name:"Sunrise Community Hospital",loc:"Chennai",specs:["Dermatology","Pediatrics","General Medicine"],rating:4.7,reviews:540,services:["Laboratory","Day-care ward","Help desk"],access:A("vvvvvu")},
+{id:"h4",name:"Palm Grove Clinic",loc:"Kanchipuram",specs:["General Medicine","ENT","Cardiology"],rating:4.2,reviews:96,services:["Pharmacy","Consultation rooms"],access:A("u???u?")}];
+const DOCS=[
+{id:"d1",name:"Dr. Meera Raghavan",spec:"Cardiology",h:"h1",exp:14,langs:["English","Tamil"],rating:4.8,reviews:121,slots:["09:30","11:00","15:30"]},
+{id:"d2",name:"Dr. Arjun Pillai",spec:"General Medicine",h:"h1",exp:9,langs:["English","Malayalam","Tamil"],rating:4.5,reviews:88,slots:["10:00","12:30"]},
+{id:"d3",name:"Dr. Kavya Subramanian",spec:"Pediatrics",h:"h3",exp:11,langs:["English","Tamil","Hindi"],rating:4.9,reviews:203,slots:["09:00","10:30","16:00"]},
+{id:"d4",name:"Dr. Imran Sheikh",spec:"Orthopedics",h:"h2",exp:16,langs:["English","Hindi"],rating:4.6,reviews:97,slots:["11:30","14:00"]},
+{id:"d5",name:"Dr. Lakshmi Narayanan",spec:"Neurology",h:"h2",exp:18,langs:["English","Tamil","Telugu"],rating:4.7,reviews:64,slots:[]},
+{id:"d6",name:"Dr. Rohan Das",spec:"Dermatology",h:"h3",exp:7,langs:["English","Hindi","Kannada"],rating:4.4,reviews:59,slots:["13:00","17:00"]},
+{id:"d7",name:"Dr. Anitha Joseph",spec:"ENT",h:"h4",exp:12,langs:["English","Malayalam","Tamil"],rating:4.3,reviews:41,slots:["10:15","11:45"]},
+{id:"d8",name:"Dr. Vikram Reddy",spec:"Cardiology",h:"h4",exp:20,langs:["English","Telugu","Kannada"],rating:4.6,reviews:77,slots:["09:45","15:00"]}];
+function day(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+function dateList(){return [1,2,3,4,5,6].map(day);}
+function fmtDate(s){return new Date(s+"T00:00:00").toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short"});}
+const INIT_APPTS=()=>[
+{id:"PF-482913",d:"d1",date:day(3),time:"11:00",status:"Upcoming",acc:["Wheelchair accessibility"],reason:"Routine follow-up consultation (demo)"},
+{id:"PF-337701",d:"d3",date:day(6),time:"09:00",status:"Upcoming",acc:[],reason:"General check-up (demo)"},
+{id:"PF-129044",d:"d4",date:day(-20),time:"14:00",status:"Completed",acc:["Ramps and lifts"],reason:"Consultation (demo)"},
+{id:"PF-118562",d:"d2",date:day(-45),time:"10:00",status:"Completed",acc:[],reason:"Consultation (demo)"},
+{id:"PF-090277",d:"d6",date:day(-10),time:"13:00",status:"Cancelled",acc:[],reason:"Consultation (demo)"}];
+const CATS=["Lab Reports","Prescriptions","Scans and Images","Discharge Summaries","Other Documents"];
+const INIT_DOCS=[
+{id:1,name:"Blood_test_sample.pdf",type:"PDF",size:"212 KB",date:"2026-10-12",cat:"Lab Reports"},
+{id:2,name:"Prescription_sample.pdf",type:"PDF",size:"96 KB",date:"2026-09-30",cat:"Prescriptions"},
+{id:3,name:"Chest_scan_sample.png",type:"PNG",size:"1.4 MB",date:"2026-08-21",cat:"Scans and Images"},
+{id:4,name:"Discharge_summary_sample.pdf",type:"PDF",size:"340 KB",date:"2026-06-04",cat:"Discharge Summaries"}];
+const INIT_NOTIFS=[
+{id:1,t:"Appointment confirmed",m:"Your visit with Dr. Meera Raghavan is confirmed.",read:false},
+{id:2,t:"Upcoming appointment reminder",m:"You have an appointment in 3 days at Lotus Care Hospital.",read:false},
+{id:3,t:"Pending task",m:"Complete your pre-visit registration form.",read:false},
+{id:4,t:"Appointment rescheduled",m:"Your earlier visit was moved to a new slot.",read:true},
+{id:5,t:"Appointment cancelled",m:"Your dermatology visit was cancelled.",read:true},
+{id:6,t:"Follow-up reminder",m:"Book a follow-up visit if your doctor requested one.",read:true}];
+const INIT_REVIEWS=[
+{id:1,who:"Demo Patient A",target:"Lotus Care Hospital",stars:5,text:"Clear signage and a helpful front desk. Check-in was quick."},
+{id:2,who:"Demo Patient B",target:"Dr. Kavya Subramanian",stars:5,text:"Listened patiently and explained the next steps clearly."},
+{id:3,who:"Demo Patient C",target:"Riverbend Medical Centre",stars:4,text:"Ramps were easy to use. Waiting time was a little long."}];
+const NAV=["Dashboard","Find Hospitals & Doctors","My Appointments","My Health Drive","AI Assistant","Ratings & Reviews","Settings & Language"];
+const NAV_T={
+Tamil:["முகப்பு","மருத்துவமனைகள்","என் சந்திப்புகள்","சுகாதார டிரைவ்","உதவியாளர்","மதிப்பீடுகள்","அமைப்புகள்"],
+Hindi:["डैशबोर्ड","अस्पताल खोजें","मेरी अपॉइंटमेंट","हेल्थ ड्राइव","सहायक","रेटिंग और समीक्षा","सेटिंग्स"],
+Telugu:["డాష్‌బోర్డ్","ఆసుపత్రులు","నా అపాయింట్‌మెంట్లు","హెల్త్ డ్రైవ్","సహాయకుడు","రేటింగ్‌లు","సెట్టింగ్‌లు"],
+Malayalam:["ഡാഷ്ബോർഡ്","ആശുപത്രികൾ","എന്റെ അപ്പോയിന്റ്മെന്റുകൾ","ഹെൽത്ത് ഡ്രൈവ്","സഹായി","റേറ്റിംഗുകൾ","ക്രമീകരണങ്ങൾ"],
+Kannada:["ಡ್ಯಾಶ್‌ಬೋರ್ಡ್","ಆಸ್ಪತ್ರೆಗಳು","ನನ್ನ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್‌ಗಳು","ಹೆಲ್ತ್ ಡ್ರೈವ್","ಸಹಾಯಕ","ರೇಟಿಂಗ್‌ಗಳು","ಸೆಟ್ಟಿಂಗ್‌ಗಳು"]};
+const PAGE_IDS=["dash","find","appts","drive","ai","reviews","settings"];
+const PAGE_ICONS=["▦","🩺","📅","📁","🤖","⭐","⚙️"];
+
+// ===== STATE =====
+function readSaved(k,f){try{const t=localStorage.getItem(k);return t===null?f:JSON.parse(t);}catch(e){return f;}}
+function writeSaved(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+const st={stage:"intro",page:"dash",menu:false,bell:false,appts:INIT_APPTS(),docs:[...INIT_DOCS],notifs:[...INIT_NOTIFS],
+ lang:readSaved("pf_lang","English"),look:readSaved("pf_look",{large:false,contrast:false}),loc:"Chengalpattu",query:"",book:null,modal:null,fade:false,user:null,reviews:[]};
+let AU={mode:"login",role:"Patient"};
+let P={};
+let toasts=[];
+const $=s=>document.querySelector(s);
+let TOKEN=readSaved("pf_token",null);
+// ===== In-browser backend: accounts, appointments, notifications, files, reviews =====
+// Data lives in this browser (localStorage + IndexedDB). No server is needed.
+const DN={d1:["Dr. Meera Raghavan",["09:30","11:00","15:30"]],d2:["Dr. Arjun Pillai",["10:00","12:30"]],d3:["Dr. Kavya Subramanian",["09:00","10:30","16:00"]],d4:["Dr. Imran Sheikh",["11:30","14:00"]],d5:["Dr. Lakshmi Narayanan",[]],d6:["Dr. Rohan Das",["13:00","17:00"]],d7:["Dr. Anitha Joseph",["10:15","11:45"]],d8:["Dr. Vikram Reddy",["09:45","15:00"]]};
+let db=readSaved("pf_db",null)||{users:{},reviews:[...INIT_REVIEWS]};
+const saveDb=()=>{try{localStorage.setItem("pf_db",JSON.stringify(db));}catch(e){throw Object.assign(new Error("Browser storage is full or blocked"),{code:500});}};
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+async function hashPw(pw,salt){
+ if(!(window.crypto&&crypto.subtle))throw Object.assign(new Error("Open this page via Live Server, https or a hosted site to use accounts"),{code:500});
+ salt=salt||hex(crypto.getRandomValues(new Uint8Array(16)));
+ const k=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveBits"]);
+ const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:new TextEncoder().encode(salt),iterations:100000,hash:"SHA-256"},k,256);
+ return salt+":"+hex(bits);}
+const idb=()=>new Promise((ok,no)=>{const r=indexedDB.open("pf_files",1);r.onupgradeneeded=()=>r.result.createObjectStore("f");r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error);});
+async function idbPut(k,v){const d=await idb();return new Promise((ok,no)=>{const t=d.transaction("f","readwrite");t.objectStore("f").put(v,k);t.oncomplete=ok;t.onerror=()=>no(t.error);});}
+async function idbGet(k){const d=await idb();return new Promise((ok,no)=>{const r=d.transaction("f").objectStore("f").get(k);r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error);});}
+function seedUser(u){
+ u.appts=[
+ {id:"PF-482913",d:"d1",date:day(3),time:"11:00",status:"Upcoming",acc:["Wheelchair accessibility"],reason:"Routine follow-up consultation (demo)"},
+ {id:"PF-337701",d:"d3",date:day(6),time:"09:00",status:"Upcoming",acc:[],reason:"General check-up (demo)"},
+ {id:"PF-129044",d:"d4",date:day(-20),time:"14:00",status:"Completed",acc:["Ramps and lifts"],reason:"Consultation (demo)"},
+ {id:"PF-118562",d:"d2",date:day(-45),time:"10:00",status:"Completed",acc:[],reason:"Consultation (demo)"},
+ {id:"PF-090277",d:"d6",date:day(-10),time:"13:00",status:"Cancelled",acc:[],reason:"Consultation (demo)"}];
+ u.notifs=[
+ {id:1,t:"Welcome to PharmaFlow",m:"Your account is ready.",read:false},
+ {id:2,t:"Upcoming appointment reminder",m:"You have an appointment in 3 days at Lotus Care Hospital.",read:false},
+ {id:3,t:"Pending task",m:"Complete your pre-visit registration form.",read:false},
+ {id:4,t:"Follow-up reminder",m:"Book a follow-up visit if your doctor requested one.",read:true}];
+ u.docs=INIT_DOCS.slice(0,2).map(d=>({...d}));}
+const note=(u,t,m)=>u.notifs.unshift({id:Date.now(),t,m,read:false});
+const viewOf=u=>({user:{name:u.name,email:u.email,pid:u.pid},appts:u.appts,notifs:u.notifs,docs:u.docs.map(d=>({...d,hasFile:!!d.file})),reviews:db.reviews});
+const slotTaken=(d,date,time,skip)=>Object.values(db.users).some(u=>u.appts.some(a=>a.id!==skip&&a.d===d&&a.date===date&&a.time===time&&a.status==="Upcoming"));
+const clip=(v,n)=>String(v==null?"":v).slice(0,n);
+async function api(path,o={}){
+ const m=o.method||"GET",b=(o.body&&!o.raw)?o.body:{},E=(msg,c=400)=>{throw Object.assign(new Error(msg),{code:c});};
+ let u=null;try{u=db.users[atob(TOKEN)]||null;}catch(e){}
+ if(m==="POST"&&path==="/register"){
+  const email=clip(b.email,120).trim().toLowerCase(),name=clip(b.name,60).trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))E("Enter a valid email");
+  if(!name)E("Enter your name");if(clip(b.password,200).length<6)E("Password must be at least 6 characters");
+  if(db.users[email])E("An account with this email already exists",409);
+  const nu=db.users[email]={name,email,pw:await hashPw(b.password),pid:"DEMO-"+Math.floor(1000+Math.random()*9000)};
+  seedUser(nu);saveDb();return{token:btoa(email)};}
+ if(m==="POST"&&path==="/login"){
+  const x=db.users[clip(b.email,120).trim().toLowerCase()];
+  if(!x||(await hashPw(clip(b.password,200),x.pw.split(":")[0]))!==x.pw)E("Wrong email or password",401);
+  return{token:btoa(x.email)};}
+ if(!u){if(st.stage==="app"){logout();}E("Please sign in again",401);}
+ if(m==="GET"&&path==="/state")return viewOf(u);
+ if(m==="POST"&&path==="/appts"){
+  const d=DN[b.d];
+  if(!d||!d[1].includes(b.time)||!/^\d{4}-\d{2}-\d{2}$/.test(b.date)||b.date<=day(0))E("Invalid appointment details");
+  if(slotTaken(b.d,b.date,b.time))E("That time was just taken. Please pick another.",409);
+  const a={id:"PF-"+Math.floor(100000+Math.random()*900000),d:b.d,date:b.date,time:b.time,status:"Upcoming",acc:(Array.isArray(b.acc)?b.acc:[]).slice(0,6).map(x=>clip(x,40)),reason:clip(b.reason,160)};
+  u.appts.unshift(a);note(u,"Appointment confirmed","Demo booking with "+d[0]+" on "+fmtDate(a.date)+", "+a.time);saveDb();
+  return{appt:a,appts:u.appts,notifs:u.notifs};}
+ let r;
+ if(m==="PATCH"&&(r=path.match(/^\/appts\/([\w-]+)$/))){
+  const a=u.appts.find(x=>x.id===r[1]);if(!a)E("Not found",404);
+  if(a.status!=="Upcoming")E("Only upcoming appointments can be changed");
+  if(b.status==="Cancelled"){a.status="Cancelled";note(u,"Appointment cancelled","Your visit with "+DN[a.d][0]+" was cancelled.");}
+  else if(b.date&&b.time){
+   if(!DN[a.d][1].includes(b.time)||!/^\d{4}-\d{2}-\d{2}$/.test(b.date)||b.date<=day(0))E("Invalid appointment details");
+   if(slotTaken(a.d,b.date,b.time,a.id))E("That time is already booked",409);
+   a.date=b.date;a.time=b.time;note(u,"Appointment rescheduled","Moved to "+fmtDate(a.date)+", "+a.time);
+  }else E("Nothing to change");
+  saveDb();return{appts:u.appts,notifs:u.notifs};}
+ if(m==="POST"&&path==="/notifs/read"){u.notifs.forEach(n=>{if(!b.id||String(n.id)===String(b.id))n.read=true;});saveDb();return{ok:true};}
+ if(m==="DELETE"&&path==="/notifs"){u.notifs=[];saveDb();return{ok:true};}
+ if(m==="POST"&&path==="/docs"){
+  const f=o.body,name=clip(decodeURIComponent(o.headers["x-filename"]),120),cat=decodeURIComponent(o.headers["x-category"]);
+  if(!CATS.includes(cat))E("Invalid category");if(f.size>10*1024*1024)E("File too large (10 MB max)",413);
+  const id=Date.now()+Math.floor(Math.random()*1000);
+  try{await idbPut(u.email+":"+id,f);}catch(e){E("Could not save the file in this browser",500);}
+  u.docs.unshift({id,name,type:(name.split(".").pop()||"").toUpperCase().slice(0,6),size:f.size>1e6?(f.size/1e6).toFixed(1)+" MB":Math.max(1,Math.round(f.size/1000))+" KB",date:day(0),cat,file:true});
+  saveDb();return{docs:viewOf(u).docs};}
+ if(m==="POST"&&path==="/reviews"){
+  const text=clip(b.text,300).trim(),stars=Math.round(Number(b.stars));
+  if(text.length<5||!(stars>=1&&stars<=5)||!clip(b.target,80))E("Please write a few words and choose a rating");
+  db.reviews.unshift({id:Date.now(),who:u.name+" (demo)",target:clip(b.target,80),stars,text});db.reviews=db.reviews.slice(0,200);saveDb();
+  return{reviews:db.reviews};}
+ if(m==="POST"&&path==="/chat")return{reply:getReply(clip(b.message,500))};
+ E("Not found",404);}
+
+async function loadState(){const r=await api("/state");st.user=r.user;st.appts=r.appts;st.notifs=r.notifs;st.docs=r.docs;st.reviews=r.reviews;}
+async function fetchDoc(d){return URL.createObjectURL(await idbGet(st.user.email+":"+d.id));}
+function logout(){TOKEN=null;writeSaved("pf_token",null);st.user=null;st.stage="auth";st.page="dash";AU.mode="login";render();}
+const FN=()=>st.user?st.user.name.split(" ")[0]:"there";
+const INI=()=>st.user?st.user.name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase():"";
+async function doAuth(f){
+ if(AU.mode==="forgot"){toast("Demo only: no reset email is sent.");AU.mode="login";render();return;}
+ try{
+  const b={email:f.email.value,password:f.password.value};if(AU.mode==="register")b.name=f.fname.value;
+  const r=await api(AU.mode==="register"?"/register":"/login",{method:"POST",body:b});
+  TOKEN=r.token;writeSaved("pf_token",TOKEN);await loadState();
+  if(AU.mode==="login"&&AU.role==="Doctor")toast("The doctor portal is outside this prototype. Opening the patient portal.");
+  st.stage="app";render();
+ }catch(e){toast(e.message);}}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const doc=id=>DOCS.find(d=>d.id===id), hosp=id=>HOSP.find(h=>h.id===id);
+function applyLook(){document.documentElement.className=(st.look.large?"large ":"")+(st.look.contrast?"contrast":"");writeSaved("pf_look",st.look);}
+function toast(m){const id=Date.now()+Math.random();toasts.push({id,m});drawToasts();setTimeout(()=>{toasts=toasts.filter(t=>t.id!==id);drawToasts();},3200);}
+function drawToasts(){$("#toasts").innerHTML=toasts.map(t=>`<div class="toast">${esc(t.m)}</div>`).join("");}
+function notify(t,m){st.notifs=[{id:Date.now(),t,m,read:false},...st.notifs];}
+function initP(id){
+ if(id==="dash")return{search:""};
+ if(id==="find")return{search:st.query,locText:"",spec:"",location:"",language:"",acc:"",avail:false,tab:"doctors",cmp:[]};
+ if(id==="book"){const b=st.book||{};return{step:b.d?2:b.h?1:0,h:b.h||"",d:b.d||"",date:"",time:"",reason:"",acc:[],done:null};}
+ if(id==="appts")return{tab:"Upcoming",newDate:"",newTime:""};
+ if(id==="drive")return{search:"",cat:"All",newCat:"Other Documents"};
+ if(id==="ai")return{msgs:[{from:"bot",text:"Hi, I'm Pharma, your navigation helper. How can I help you today?"}],input:"",typing:false};
+ if(id==="reviews")return{reviews:[...st.reviews],target:HOSP[0].name,stars:5,text:""};
+ if(id==="settings")return{reminders:true,updates:true,tasks:true};
+ return{};
+}
+function go(id){st.page=id;st.menu=false;st.bell=false;st.modal=null;P=initP(id);st.fade=true;window.scrollTo(0,0);}
+
+// ===== SMALL PIECES =====
+const DEMO='<span class="badge demo">Demo data</span>';
+const Logo=(size=44,anim)=>`<svg class="lg${anim?" anim":""}" width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="pfg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0f766e"/><stop offset="1" stop-color="#2dd4bf"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#pfg)"/><path pathLength="1" d="M10 34h12l5-12 8 24 6-16h13" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const DocBot=(size=56)=>`<svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="35" r="21" fill="#ffe3cf"/><path d="M11 30a21 19 0 0 1 42 0z" fill="#fff" stroke="#14b8a6" stroke-width="2"/><rect x="29" y="11" width="6" height="14" rx="2" fill="#14b8a6"/><rect x="25" y="15" width="14" height="6" rx="2" fill="#14b8a6"/><circle cx="24" cy="37" r="2.6" fill="#0b2540"/><circle cx="40" cy="37" r="2.6" fill="#0b2540"/><circle cx="19" cy="42" r="3" fill="#ffb4a2" opacity=".6"/><circle cx="45" cy="42" r="3" fill="#ffb4a2" opacity=".6"/><path d="M26 45q6 6 12 0" fill="none" stroke="#0b2540" stroke-width="2" stroke-linecap="round"/><path d="M14 58q18 9 36 0" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round"/></svg>`;
+const Stars=(v,n)=>`<span class="stars">★ ${v.toFixed(1)}${n!=null?` <small>(${n})</small>`:""}</span>`;
+const Chips=items=>`<div class="chips">${items.map(i=>`<span class="badge">${esc(i)}</span>`).join("")}</div>`;
+const Empty=t=>`<div class="card" style="text-align:center">${esc(t)}</div>`;
+const AccessBadge=s=>`<span class="badge ${s}">${s}</span>`;
+const Modal=(title,body)=>`<div class="overlay" data-a="close"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mh"><h3>${esc(title)}</h3><button class="icon" aria-label="Close dialog" data-a="x">✕</button></div>${body}</div></div>`;
+const why=r=>r.length?`<ul class="why"><b>Why this appears:</b>${r.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:"";
+
+// ===== PAGES =====
+function dash(){
+ const up=st.appts.filter(a=>a.status==="Upcoming"),done=st.appts.filter(a=>a.status==="Completed").length;
+ return `<div class="stack"><section class="card hero"><div><h2>Welcome back, ${esc(FN())}</h2><p>Care begins with a simpler journey.</p>
+ <form class="search" data-f="dsearch">🔍<input aria-label="Search" data-p="search" placeholder="Search doctors, specialties or hospitals" value="${esc(P.search)}"><button class="btn sm">Search</button></form></div>
+ <div class="profile"><div class="avatar">${INI()}</div><b>${esc(st.user.name)}</b><span>Patient ID: ${st.user.pid}</span><span>Language: ${st.lang}</span>${DEMO}</div></section>
+ <div class="grid s">
+ <div class="card stat"><div class="ic">📅</div><div><b>${up.length}</b><small>Upcoming appointments</small></div></div>
+ <div class="card stat"><div class="ic">✅</div><div><b>${done}</b><small>Completed appointments</small></div></div>
+ <div class="card stat"><div class="ic">❤️</div><div><b>3</b><small>Saved hospitals</small></div></div>
+ <div class="card stat"><div class="ic">📋</div><div><b>2</b><small>Pending tasks</small></div></div></div>
+ <div class="grid s"><button class="card opt" data-a="go" data-v="find"><b>Find a doctor</b></button><button class="card opt" data-a="book0"><b>Book appointment</b></button><button class="card opt" data-a="go" data-v="drive"><b>Open Health Drive</b></button><button class="card opt" data-a="go" data-v="ai"><b>Ask the assistant</b></button></div>
+ <div class="grid">
+ <section class="card"><div class="row between"><h3>Upcoming appointments</h3>${DEMO}</div>${up.length===0?"<p>No upcoming appointments.</p>":""}${up.map(a=>`<p><b>${doc(a.d).name}</b><br><small>${fmtDate(a.date)}, ${a.time}</small></p>`).join("")}<button class="btn ghost sm" data-a="go" data-v="appts">Manage appointments</button></section>
+ <section class="card"><div class="row between"><h3>Recent documents</h3>${DEMO}</div>${st.docs.slice(0,3).map(d=>`<p>${esc(d.name)}<br><small>${d.cat}</small></p>`).join("")}<button class="btn ghost sm" data-a="go" data-v="drive">Open Health Drive</button></section>
+ <section class="card"><h3>Notifications</h3>${st.notifs.length===0?"<p>You're all caught up.</p>":""}${st.notifs.slice(0,3).map(n=>`<p><b>${n.t}</b><br><small>${n.m}</small></p>`).join("")}</section></div>
+ <p class="notice">Sample data is for demonstration only. PharmaFlow provides healthcare navigation support, not medical diagnosis or treatment advice.</p></div>`;
+}
+
+function discoverData(){
+ const text=P.search.toLowerCase(),mapped=[];
+ for(const w in ALIAS)if(text.includes(w))mapped.push(ALIAS[w]);
+ function pass(h,reasons,hasLang,hasSlots,hasSpec){
+  if(P.locText!==""&&!h.loc.toLowerCase().includes(P.locText.toLowerCase()))return false;
+  if(P.location!==""&&h.loc!==P.location)return false;
+  if(P.spec!==""){if(!hasSpec)return false;reasons.push("Matches the selected specialty");}
+  if(P.language!==""){if(!hasLang)return false;reasons.push("Offers "+P.language);}
+  if(P.avail){if(!hasSlots)return false;reasons.push("Has available appointment slots");}
+  if(P.acc!==""){if(h.access[ACCESS.indexOf(P.acc)]!=="verified")return false;reasons.push("Provides "+P.acc.toLowerCase()+" (verified)");}
+  if(h.loc===st.loc)reasons.push("Located near "+st.loc);
+  return true;
+ }
+ const dr=[],hr=[];
+ for(const d of DOCS){const h=hosp(d.h),reasons=[];
+  if(text!==""){let f=false;
+   if(d.name.toLowerCase().includes(text)){f=true;reasons.push("Name matches your search");}
+   if(d.spec.toLowerCase().includes(text)||mapped.includes(d.spec)){f=true;reasons.push("Matches the specialty you searched");}
+   if(h.name.toLowerCase().includes(text)){f=true;reasons.push("Works at a hospital matching your search");}
+   if(!f)continue;}
+  if(pass(h,reasons,d.langs.includes(P.language),d.slots.length>0,d.spec===P.spec))dr.push({doctor:d,hospital:h,reasons});}
+ for(const h of HOSP){const here=DOCS.filter(d=>d.h===h.id),reasons=[];
+  if(text!==""){let f=false;
+   if(h.name.toLowerCase().includes(text)){f=true;reasons.push("Name matches your search");}
+   for(const s of h.specs){if(s.toLowerCase().includes(text)||mapped.includes(s)){f=true;reasons.push("Offers the specialty you searched");break;}}
+   if(!f)continue;}
+  if(pass(h,reasons,here.some(d=>d.langs.includes(P.language)),here.some(d=>d.slots.length>0),h.specs.includes(P.spec)))hr.push({hospital:h,reasons});}
+ return{dr,hr};
+}
+function find(){
+ const {dr,hr}=discoverData();
+ const sel=(key,label,list)=>`<select aria-label="${label}" data-p="${key}"><option value="">Any ${label.toLowerCase()}</option>${list.map(s=>`<option${P[key]===s?" selected":""}>${s}</option>`).join("")}</select>`;
+ const cmpBox=id=>`<label class="row"><input type="checkbox" data-i="cmp" data-v="${id}"${P.cmp.includes(id)?" checked":""}> Compare</label>`;
+ return `<div class="stack"><div class="card"><div class="row">
+ <div class="search grow" style="margin:0">🔍<input aria-label="Search" data-p="search" placeholder="Doctor name, specialty (try heart or skin) or hospital" value="${esc(P.search)}"></div>
+ <div class="search grow" style="margin:0">📍<input aria-label="Location search" data-p="locText" placeholder="Search a location" value="${esc(P.locText)}"></div></div>
+ <div class="row" style="margin-top:.6rem"><button class="btn ghost sm" data-a="showloc">📍 Change Location</button><small>Current location: <b>${st.loc}</b></small></div>
+ <div class="grid s" style="margin-top:.8rem">${sel("spec","Specialty",SPEC)}${sel("location","Location",LOCS)}${sel("language","Language",LANGS)}${sel("acc","Accessibility",ACCESS)}
+ <label class="row"><input type="checkbox" data-p="avail"${P.avail?" checked":""}> Available slots only</label></div></div>
+ <div class="row between"><div class="tabs"><button class="tab${P.tab==="doctors"?" on":""}" data-a="ftab" data-v="doctors">Doctors (${dr.length})</button><button class="tab${P.tab==="hospitals"?" on":""}" data-a="ftab" data-v="hospitals">Hospitals (${hr.length})</button></div>
+ <div class="row">${DEMO}<button class="btn sm"${P.cmp.length<2?" disabled":""} data-a="showcmp">Compare (${P.cmp.length}/2)</button></div></div>
+ <p class="notice">This tool helps you find services only. It does not diagnose conditions or recommend treatment.</p>
+ ${P.tab==="doctors"&&dr.length===0?Empty("No doctors match. Try clearing a filter."):""}
+ ${P.tab==="doctors"?`<div class="grid">${dr.map(r=>`<div class="card"><div class="row between"><h3>${r.doctor.name}</h3>${cmpBox(r.doctor.id)}</div>
+  <p><b>${r.doctor.spec}</b> · ${r.doctor.exp} years experience (sample)</p><p><small>${r.hospital.name}, ${r.hospital.loc}</small></p>
+  <p>${Stars(r.doctor.rating,r.doctor.reviews)} · <small>${r.doctor.langs.join(", ")}</small></p>
+  ${r.doctor.slots.length>0?Chips(r.doctor.slots):"<p><small>No slots available</small></p>"}${why(r.reasons)}
+  <div class="row" style="margin-top:.7rem"><button class="btn ghost sm" data-a="prof" data-v="d:${r.doctor.id}">View Profile</button><button class="btn sm"${r.doctor.slots.length===0?" disabled":""} data-a="startbook" data-v="${r.doctor.id}">Book Appointment</button></div></div>`).join("")}</div>`:""}
+ ${P.tab==="hospitals"&&hr.length===0?Empty("No hospitals match. Try clearing a filter."):""}
+ ${P.tab==="hospitals"?`<div class="grid">${hr.map(r=>`<div class="card"><div class="row between"><h3>${r.hospital.name}</h3>${cmpBox(r.hospital.id)}</div>
+  <p>📍 ${r.hospital.loc} · ${Stars(r.hospital.rating,r.hospital.reviews)}</p>${Chips(r.hospital.specs)}
+  <p><small>Services: ${r.hospital.services.join(", ")}</small></p>
+  <p><small>Verified accessibility: ${ACCESS.filter((a,i)=>r.hospital.access[i]==="verified").join(", ")||"none yet"}</small></p>${why(r.reasons)}
+  <button class="btn ghost sm" style="margin-top:.7rem" data-a="prof" data-v="h:${r.hospital.id}">View Details</button></div>`).join("")}</div>`:""}</div>`;
+}
+function findModal(){
+ const m=st.modal;if(!m)return"";const {dr,hr}=discoverData();
+ if(m.t==="loc")return Modal("Change location",`<div class="stack">${LOCS.map(n=>`<button class="${st.loc===n?"opt on":"opt"}" data-a="setloc" data-v="${n}">${n}</button>`).join("")}<small>Demo list only. Your real location is never used.</small></div>`);
+ if(m.t==="cmp"&&P.tab==="doctors"){const c=dr.filter(r=>P.cmp.includes(r.doctor.id)),row=(l,f)=>`<tr><th>${l}</th>${c.map(r=>`<td>${f(r)}</td>`).join("")}</tr>`;
+  return Modal("Compare doctors",`<table><tbody><tr><th></th>${c.map(r=>`<th>${r.doctor.name}</th>`).join("")}</tr>${row("Specialty",r=>r.doctor.spec)}${row("Hospital",r=>r.hospital.name)}${row("Experience",r=>r.doctor.exp+" years")}${row("Languages",r=>r.doctor.langs.join(", "))}${row("Rating",r=>r.doctor.rating+" ("+r.doctor.reviews+")")}</tbody></table>`);}
+ if(m.t==="cmp"){const c=hr.filter(r=>P.cmp.includes(r.hospital.id)),row=(l,f)=>`<tr><th>${l}</th>${c.map(r=>`<td>${f(r)}</td>`).join("")}</tr>`;
+  return Modal("Compare hospitals",`<table><tbody><tr><th></th>${c.map(r=>`<th>${r.hospital.name}</th>`).join("")}</tr>${row("Location",r=>r.hospital.loc)}${row("Specialties",r=>r.hospital.specs.join(", "))}${row("Rating",r=>r.hospital.rating+" ("+r.hospital.reviews+")")}${row("Services",r=>r.hospital.services.join(", "))}</tbody></table>`);}
+ if(m.t==="d"){const d=doc(m.id),h=hosp(d.h);
+  return Modal(d.name,`<div class="stack"><p><b>${d.spec}</b> · ${d.exp} years (sample data)</p><p>${h.name}, ${h.loc}</p><p>Speaks: ${d.langs.join(", ")}</p>${Stars(d.rating,d.reviews)}<p class="notice">Ratings show patient experience, not clinical quality. Demo profile.</p><button class="btn"${d.slots.length===0?" disabled":""} data-a="startbook" data-v="${d.id}">Book Appointment</button></div>`);}
+ if(m.t==="h"){const h=hosp(m.id);
+  return Modal(h.name,`<div class="stack"><p>📍 ${h.loc}</p>${Stars(h.rating,h.reviews)}${Chips(h.services)}<h4>Accessibility information</h4>${ACCESS.map((n,i)=>`<div class="row between"><span>${n}</span>${AccessBadge(h.access[i])}</div>`).join("")}<small>Unverified and unknown items are not guaranteed. Please confirm with the hospital.</small></div>`);}
+ return"";
+}
+
+const STEP_NAMES=["Hospital","Doctor","Date","Time","Details","Access","Review"];
+function book(){
+ const b=P,d=doc(b.d),h=hosp(b.h);
+ const taken=slot=>st.appts.some(a=>a.d===b.d&&a.date===b.date&&a.time===slot&&a.status==="Upcoming");
+ if(b.done){const c=b.done;
+  return `<div class="card stack" style="max-width:560px;margin:auto"><h2>Appointment confirmed</h2><p><small>Demonstration only. No real appointment has been booked.</small></p>
+  <table><tbody><tr><th>Appointment ID</th><td>${c.id}</td></tr><tr><th>Doctor</th><td>${d.name}</td></tr><tr><th>Hospital</th><td>${h.name}</td></tr><tr><th>Date and time</th><td>${fmtDate(c.date)}, ${c.time}</td></tr><tr><th>Accessibility</th><td>${esc(c.acc.join(", ")||"None selected")}</td></tr><tr><th>Status</th><td>Confirmed (demo)</td></tr></tbody></table>
+  <div class="row"><button class="btn" data-a="viewappts">View my appointments</button><button class="btn ghost" data-a="go" data-v="dash">Back to dashboard</button></div></div>`;}
+ const can=[b.h!=="",b.d!=="",b.date!=="",b.time!=="",b.reason.trim().length>2,true,true][b.step];
+ let body="";
+ if(b.step===0)body=`<h3>Select a hospital</h3>${HOSP.map(x=>`<button class="${b.h===x.id?"opt on":"opt"}" data-a="bh" data-v="${x.id}"><b>${x.name}</b><br><small>${x.loc} · ${x.specs.join(", ")}</small></button>`).join("")}`;
+ if(b.step===1)body=`<h3>Select a doctor</h3>${DOCS.filter(x=>x.h===b.h).map(x=>`<button${x.slots.length===0?" disabled":""} class="${b.d===x.id?"opt on":"opt"}" data-a="bd" data-v="${x.id}"><b>${x.name}</b> · ${x.spec}<br><small>${x.slots.length>0?x.slots.length+" slots":"No slots available"}</small></button>`).join("")}`;
+ if(b.step===2)body=`<h3>Select a date</h3><div class="row">${dateList().map(x=>`<button class="${b.date===x?"tab on":"tab"}" data-a="bdate" data-v="${x}">${fmtDate(x)}</button>`).join("")}</div>`;
+ if(b.step===3)body=`<h3>Select a time slot</h3><div class="row">${d.slots.map(s=>`<button${taken(s)?" disabled":""} class="${b.time===s?"tab on":"tab"}" data-a="btime" data-v="${s}">${s}${taken(s)?" (taken)":""}</button>`).join("")}</div>`;
+ if(b.step===4)body=`<h3>Consultation details</h3><label>Reason for visit (demo text only)<textarea rows="3" maxlength="160" data-p="reason" placeholder="e.g. Routine consultation">${esc(b.reason)}</textarea></label><p class="notice">Please don't enter real medical details. This is saved to your demo account.</p>`;
+ if(b.step===5)body=`<h3>Accessibility preferences</h3>${ACCESS.map((n,i)=>`<label class="row between opt"><span class="row"><input type="checkbox" data-i="bacc" data-v="${n}"${b.acc.includes(n)?" checked":""}> ${n}</span>${AccessBadge(h.access[i])}</label>`).join("")}<small>These are requests, not guarantees. Please confirm directly with the hospital.</small>`;
+ if(b.step===6)body=`<h3>Review your booking</h3><table><tbody><tr><th>Hospital</th><td>${h.name}</td></tr><tr><th>Doctor</th><td>${d.name}</td></tr><tr><th>Date</th><td>${fmtDate(b.date)}</td></tr><tr><th>Time</th><td>${b.time}</td></tr><tr><th>Reason</th><td>${esc(b.reason)}</td></tr><tr><th>Accessibility</th><td>${esc(b.acc.join(", ")||"None selected")}</td></tr></tbody></table>`;
+ return `<div class="stack"><div class="steps">${STEP_NAMES.map((n,i)=>`<div class="${i===b.step?"st on":i<b.step?"st done":"st"}">${i+1}. ${n}</div>`).join("")}</div>
+ <div class="card stack">${body}<div class="row between"><button class="btn ghost"${b.step===0?" disabled":""} data-a="bback">Back</button>${b.step<6?`<button class="btn"${can?"":" disabled"} data-a="bnext">Continue</button>`:`<button class="btn" data-a="bconfirm">Confirm appointment</button>`}</div></div></div>`;
+}
+
+function appts(){
+ const vis=st.appts.filter(a=>a.status===P.tab);
+ return `<div class="stack"><div class="row between"><div class="tabs">${["Upcoming","Completed","Cancelled"].map(n=>`<button class="${P.tab===n?"tab on":"tab"}" data-a="atab" data-v="${n}">${n} (${st.appts.filter(a=>a.status===n).length})</button>`).join("")}</div>${DEMO}</div>
+ ${vis.length===0?Empty("No "+P.tab.toLowerCase()+" appointments."):""}
+ <div class="grid">${vis.map(a=>{const d=doc(a.d),h=hosp(d.h);
+  return `<div class="card"><div class="row between"><h3>${d.name}</h3><span class="badge ${a.status}">${a.status}</span></div><p>${d.spec} · ${h.name}</p><p>🕐 ${fmtDate(a.date)}, ${a.time}</p><small>ID ${a.id}</small>
+  <div class="row" style="margin-top:.7rem"><button class="btn ghost sm" data-a="pop" data-v="view:${a.id}">View Details</button>
+  ${a.status==="Upcoming"?`<button class="btn ghost sm" data-a="pop" data-v="reschedule:${a.id}">Reschedule</button><button class="btn danger sm" data-a="pop" data-v="cancel:${a.id}">Cancel Appointment</button>`:""}
+  <button class="btn ghost sm" data-a="pop" data-v="map:${a.id}">View Map</button></div></div>`;}).join("")}</div></div>`;
+}
+function apptsModal(){
+ const m=st.modal;if(!m)return"";const a=st.appts.find(x=>x.id===m.id);if(!a)return"";const d=doc(a.d),h=hosp(d.h);
+ if(m.t==="view")return Modal("Appointment details",`<table><tbody><tr><th>ID</th><td>${a.id}</td></tr><tr><th>Doctor</th><td>${d.name}</td></tr><tr><th>Hospital</th><td>${h.name}, ${h.loc}</td></tr><tr><th>Date and time</th><td>${fmtDate(a.date)}, ${a.time}</td></tr><tr><th>Status</th><td>${a.status}</td></tr><tr><th>Accessibility</th><td>${esc(a.acc.join(", ")||"None selected")}</td></tr><tr><th>Reason</th><td>${esc(a.reason)}</td></tr></tbody></table>`);
+ if(m.t==="cancel")return Modal("Cancel this appointment?",`<p>${d.name} on ${fmtDate(a.date)}, ${a.time}.</p><div class="row" style="margin-top:1rem"><button class="btn danger" data-a="docancel">Yes, cancel</button><button class="btn ghost" data-a="x">Keep appointment</button></div>`);
+ if(m.t==="reschedule")return Modal("Reschedule",`<h4>Choose a new date</h4><div class="row">${dateList().map(x=>`<button class="${P.newDate===x?"tab on":"tab"}" data-a="ndate" data-v="${x}">${fmtDate(x)}</button>`).join("")}</div>
+  ${P.newDate!==""?`<h4 style="margin-top:.8rem">Choose a time</h4><div class="row">${d.slots.map(s=>`<button class="${P.newTime===s?"tab on":"tab"}" data-a="ntime" data-v="${s}">${s}</button>`).join("")}</div>`:""}
+  <button class="btn" style="margin-top:1rem"${P.newDate===""||P.newTime===""?" disabled":""} data-a="doresched">Confirm new time</button>`);
+ if(m.t==="map")return Modal(h.name,`<div class="map" role="img" aria-label="Simulated map"><div class="road" style="left:0;right:0;top:55%;height:10px"></div><div class="road" style="top:0;bottom:0;left:40%;width:10px"></div><span class="pin">📍</span><span class="tag">Simulated map · ${h.loc}</span></div><p class="notice" style="margin-top:.6rem">This is a simulated panel. Live directions need a real map service, which this prototype does not use.</p>`);
+ return"";
+}
+
+function drive(){
+ const vis=st.docs.filter(d=>(P.cat==="All"||d.cat===P.cat)&&d.name.toLowerCase().includes(P.search.toLowerCase()));
+ return `<div class="stack"><p class="notice"><b>Prototype notice:</b> Files you select are saved in this browser (IndexedDB) under your demo account. They are not encrypted or medically secure. Please don't upload real medical records.</p>
+ <div class="card row"><div class="search grow" style="margin:0">🔍<input aria-label="Search documents" data-p="search" placeholder="Search documents" value="${esc(P.search)}"></div>
+ <select aria-label="Category for new files" style="width:auto" data-p="newCat">${CATS.map(c=>`<option${P.newCat===c?" selected":""}>${c}</option>`).join("")}</select>
+ <input id="file" type="file" multiple hidden data-i="files"><button class="btn" data-a="pick">⬆ Select document</button></div>
+ <div class="tabs">${["All",...CATS].map(c=>`<button class="${P.cat===c?"tab on":"tab"}" data-a="dcat" data-v="${c}">${c}</button>`).join("")}</div>
+ ${vis.length===0?Empty("No documents found. Select a file or change the category."):""}
+ <div class="grid">${vis.map(d=>`<div class="card"><div class="row between"><span style="color:#0f766e">📄</span>${d.hasFile?'<span class="badge">Saved</span>':DEMO}</div><h4 style="word-break:break-word">${esc(d.name)}</h4><small>${d.cat}</small><p><small>${d.type} · ${d.size} · Added ${d.date}</small></p>
+ <div class="row"><button class="btn ghost sm" data-a="dview" data-v="${d.id}">👁 View</button><button class="btn ghost sm" data-a="ddown" data-v="${d.id}">⬇ Download</button></div></div>`).join("")}</div></div>`;
+}
+function driveModal(){const m=st.modal;if(!m||m.t!=="doc")return"";const d=st.docs.find(x=>String(x.id)===m.id);return d?Modal(d.name,"<p>This is a fictional demo document with no real content. A future secure version could show a preview here.</p>"):"";}
+
+const SUGGESTIONS=["How can I find a nearby hospital?","How do I book an appointment?","What documents should I carry?","How can I reschedule an appointment?","How do I find a doctor who speaks my language?"];
+const MEDICAL_WORDS=["diagnos","medicine","tablet","drug","dose","prescri","symptom","pain","fever","treatment","cure","disease"];
+function getReply(q){
+ const t=q.toLowerCase();
+ for(const w of MEDICAL_WORDS)if(t.includes(w))return"I can't help with medical questions such as diagnosis, medicines or treatment. Please speak with a qualified healthcare professional. I can help you find a hospital or book a visit.";
+ if(t.includes("resched"))return"Go to My Appointments, choose Reschedule on an upcoming appointment, then pick a new date and time slot.";
+ if(t.includes("book")||t.includes("appointment"))return"Pick a doctor in Find Hospitals & Doctors and press Book Appointment. You will choose a date, a time and accessibility needs, then review and confirm.";
+ if(t.includes("near")||t.includes("hospital"))return"Open Find Hospitals & Doctors, use Change Location under the search bar, then filter by specialty or accessibility. Each result explains why it appears.";
+ if(t.includes("document")||t.includes("carry")||t.includes("bring"))return"Hospitals often ask for a photo ID, a referral letter if you have one, earlier reports or prescriptions, and insurance details. Check with your hospital for its exact list.";
+ if(t.includes("language")||t.includes("speak"))return"In Find Hospitals & Doctors, set the Language filter. Each doctor card lists the languages they speak.";
+ return"I can help you find facilities, understand booking steps and know which documents to carry. Try one of the suggested questions.";
+}
+function sendMessage(text){
+ if(text.trim()===""||P.typing)return;
+ const p=P;p.msgs.push({from:"me",text});p.input="";p.typing=true;render();
+ api("/chat",{method:"POST",body:{message:text}}).then(r=>r.reply,()=>getReply(text)).then(rep=>setTimeout(()=>{p.msgs.push({from:"bot",text:rep});p.typing=false;if(P===p)render();},900));
+}
+function ai(){
+ return `<div class="card chat"><div class="row between"><div class="row">${DocBot()}<div><h3 style="margin:0">Pharma Assistant</h3><small>Navigation help · no medical advice</small></div></div><button class="btn ghost sm" data-a="clearchat">🗑 Clear chat</button></div>
+ <div class="msgs" aria-live="polite">${P.msgs.map(m=>`<div class="${m.from==="me"?"bub me":"bub bot"}">${esc(m.text)}</div>`).join("")}${P.typing?'<div class="bub bot typing"><span></span><span></span><span></span></div>':""}</div>
+ <div class="chips">${SUGGESTIONS.map(q=>`<button class="tab" data-a="suggest" data-v="${esc(q)}">${q}</button>`).join("")}</div>
+ <form class="row" data-f="chat"><input class="input grow" style="width:auto" aria-label="Message" data-p="input" placeholder="Ask about hospitals, booking or documents" value="${esc(P.input)}"><button type="button" class="icon" aria-label="Voice search (visual only)" data-a="mic">🎤</button><button class="btn" aria-label="Send">➤</button></form>
+ <small>PharmaFlow provides healthcare navigation support, not medical diagnosis or treatment advice.</small></div>`;
+}
+
+const CATEGORIES=[{name:"Cleanliness",score:4.6},{name:"Staff behaviour",score:4.5},{name:"Accessibility",score:4.2},{name:"Appointment experience",score:4.4}];
+function reviews(){
+ const names=[...HOSP.map(h=>h.name),...DOCS.map(d=>d.name)];
+ return `<div class="stack"><p class="notice">Reviews here are demonstration data, not verified patient reviews. In a real app, only verified patients with completed appointments could review. Ratings show patient experience and do not establish clinical quality.</p>
+ <div class="grid"><div class="card"><h3>Overall rating</h3><b style="font-family:Sora;font-size:2.6rem">4.5</b> ${Stars(4.5)}<p><small>out of 5 · 1,156 reviews (demo)</small></p></div>
+ <div class="card stack">${CATEGORIES.map(c=>`<div><div class="row between"><span>${c.name}</span><b>${c.score}</b></div><div class="bar"><i style="width:${c.score*20}%"></i></div></div>`).join("")}</div></div>
+ <form class="card stack" data-f="review"><h3>Write a sample review</h3>
+ <label>Hospital or doctor<select data-p="target">${names.map(n=>`<option${P.target===n?" selected":""}>${n}</option>`).join("")}</select></label>
+ <label>Rating<select data-p="stars" data-n="1">${[5,4,3,2,1].map(n=>`<option value="${n}"${P.stars===n?" selected":""}>${n} stars</option>`).join("")}</select></label>
+ <label>Your review<textarea rows="3" maxlength="300" data-p="text" placeholder="Describe the service, not medical details">${esc(P.text)}</textarea></label>
+ <button class="btn" style="justify-self:start">Submit sample review</button></form>
+ <div class="grid">${P.reviews.map(r=>`<div class="card"><div class="row between"><b>${esc(r.target)}</b>${Stars(r.stars)}</div><p>${esc(r.text)}</p><small>${esc(r.who)} · Demo review, unverified</small></div>`).join("")}</div></div>`;
+}
+
+function settings(){
+ const ck=(k,l)=>`<label class="row"><input type="checkbox" data-p="${k}"${P[k]?" checked":""}> ${l}</label>`;
+ return `<div class="grid"><section class="card"><h3>Profile preview</h3><div class="row"><div class="avatar">${INI()}</div><div><b>${esc(st.user.name)}</b><br><small>${esc(st.user.email)} · ${st.user.pid}</small></div></div><button class="btn ghost sm" style="margin-top:.7rem" data-a="logout">Sign out</button></section>
+ <section class="card stack"><h3>Language</h3><select aria-label="Language" data-i="lang2">${LANGS.map(l=>`<option${st.lang===l?" selected":""}>${l}</option>`).join("")}</select><p class="notice">Prototype limitation: only the sidebar menu is translated. Other labels stay in English.</p></section>
+ <section class="card stack"><h3>Notification preferences</h3>${ck("reminders","Reminders")}${ck("updates","Appointment updates")}${ck("tasks","Administrative tasks")}<small>Preview only. No push notifications are sent.</small></section>
+ <section class="card stack"><h3>Appearance</h3><label class="row"><input type="checkbox" data-i="large"${st.look.large?" checked":""}> Larger text</label><label class="row"><input type="checkbox" data-i="contrast"${st.look.contrast?" checked":""}> Higher contrast</label></section>
+ <section class="card"><h3>Help and support</h3><p>This is a prototype. For real care questions, contact your hospital or a qualified healthcare professional.</p><small>Demo support: support@pharmaflow.example</small></section>
+ <section class="card"><h3>Privacy</h3><p>PharmaFlow is a prototype. Your demo account, appointments and files are saved in this browser only, with no secure medical-record storage. Clearing site data removes them.</p></section></div>`;
+}
+
+// ===== INTRO + AUTH =====
+function intro(){
+ return `<div class="intro" id="intro"><button class="skip" data-a="skip">Skip Intro</button><div><div style="display:inline-block">${Logo(104,true)}</div><h1>PharmaFlow</h1><p style="font-size:1.2rem">Care begins with a simpler journey.</p><p style="font-weight:600;letter-spacing:.25em">HEALTHCARE, MADE SIMPLE.</p><div class="prog"><i></i></div></div></div>`;
+}
+let introTimer=null,introDone=false;
+function finishIntro(){
+ if(introDone)return;introDone=true;clearTimeout(introTimer);
+ const el=$("#intro");if(el)el.classList.add("out");
+ setTimeout(()=>{st.stage=st.user?"app":"auth";render();},600);
+}
+function auth(){
+ const m=AU.mode,heading=m==="register"?"Create your account":m==="forgot"?"Reset password":"Sign in";
+ return `<div class="auth"><div class="l">${Logo(72)}<h1 style="font-size:2.4rem">PharmaFlow</h1><p>Healthcare, Made Simple.</p><p>Find hospitals, book visits and know your next step.</p></div>
+ <div class="r"><form data-f="auth"><h2>${heading}</h2><p class="notice">Prototype: accounts are stored in this browser only. Please don't reuse a real password or enter medical details.</p>
+ ${m==="login"?`<div class="tabs"><button type="button" class="${AU.role==="Patient"?"tab on":"tab"}" data-a="role" data-v="Patient">Patient Login</button><button type="button" class="${AU.role==="Doctor"?"tab on":"tab"}" data-a="role" data-v="Doctor">Doctor Login</button></div>`:""}
+ ${m==="register"?`<label>Full name (fictional)<input class="input" name="fname" required placeholder="Priya Sharma"></label>`:""}
+ <label>Email<input class="input" name="email" type="email" required placeholder="you@example.com" autocomplete="off"></label>
+ ${m!=="forgot"?`<label>Password<input class="input" name="password" type="password" required minlength="6" placeholder="Password (min 6 characters)" autocomplete="off"></label>`:""}
+ <button class="btn">${m==="login"?"Sign in":m==="register"?"Register":"Send reset link"}</button>
+ ${m==="login"?`<button type="button" class="link" data-a="mode" data-v="forgot">Forgot password?</button><button type="button" class="link" data-a="mode" data-v="register">New patient? Create an account</button>`:`<button type="button" class="link" data-a="mode" data-v="login">Back to sign in</button>`}
+ </form></div></div>`;
+}
+
+// ===== APP SHELL =====
+const PAGES={dash,find,book,appts,drive,ai,reviews,settings};
+const MODALS={find:findModal,appts:apptsModal,drive:driveModal};
+function shell(){
+ const labels=NAV_T[st.lang]||NAV;
+ let ai_=PAGE_IDS.indexOf(st.page);if(st.page==="book")ai_=1;
+ let title=NAV[ai_];if(st.page==="dash")title="Welcome, "+FN();if(st.page==="book")title="Book an appointment";
+ const unread=st.notifs.filter(n=>!n.read).length;
+ return `<div class="app"><aside class="${st.menu?"side open":"side"}"><div class="brand">${Logo(40)}<div><b>PharmaFlow</b><small>Healthcare, Made Simple.</small></div></div>
+ ${PAGE_IDS.map((id,i)=>`<button class="${ai_===i?"nav on":"nav"}" data-a="nav" data-v="${id}">${PAGE_ICONS[i]} ${labels[i]}</button>`).join("")}
+ <p class="note">Prototype with fictional data. Not for real medical use.</p></aside>
+ ${st.menu?'<div class="overlay" style="z-index:25;background:#0b254099" data-a="menu"></div>':""}
+ <div class="main"><header class="top"><button class="icon burger" aria-label="Open menu" data-a="menu">${st.menu?"✕":"☰"}</button><h1 class="grow">${title}</h1>
+ <select aria-label="Language" data-i="lang">${LANGS.map(l=>`<option${st.lang===l?" selected":""}>${l}</option>`).join("")}</select>
+ <button class="icon" aria-label="Notifications" data-a="bell">🔔${unread>0?`<span class="dot">${unread}</span>`:""}</button>
+ <button class="icon" aria-label="Profile" data-a="go" data-v="settings">👤</button></header>
+ ${st.bell?`<div class="card panel"><div class="row between"><h3>Notifications</h3><span class="row"><button class="link" data-a="readall">Mark all read</button><button class="link" data-a="clearn">Clear</button></span></div>
+ ${st.notifs.length===0?"<p>You're all caught up.</p>":""}${st.notifs.map(n=>`<div class="${n.read?"nitem":"nitem un"}"><span class="pip"></span><div class="grow"><b>${n.t}</b><p><small>${n.m}</small></p>${!n.read?`<button class="link" data-a="markread" data-v="${n.id}">Mark as read</button>`:""}</div></div>`).join("")}
+ <small>Sample notifications. No push messages are sent.</small></div>`:""}
+ <main class="content"><div class="${st.fade?"fade":""}">${PAGES[st.page]()}</div><p style="margin-top:2rem;text-align:center"><small>PharmaFlow is a prototype with an in-browser backend. It does not book real appointments, provide secure medical-record storage or give medical advice.</small></p></main></div></div>
+ ${MODALS[st.page]?MODALS[st.page]():""}`;
+}
+
+function render(){
+ const ae=document.activeElement,key=ae&&ae.dataset&&(ae.dataset.p||ae.dataset.i),pos=ae&&ae.selectionStart,y=window.scrollY;
+ const keep=$(".msgs"),mt=keep?keep.scrollTop:0;
+ let h="";
+ if(st.stage==="intro")h=intro();else if(st.stage==="auth")h=auth();else h=shell();
+ $("#root").innerHTML=h;
+ st.fade=false;
+ if(key){const n=document.querySelector(`[data-p="${key}"],[data-i="${key}"]`);if(n&&n.type!=="file"){n.focus();try{n.setSelectionRange(pos,pos);}catch(e){}}}
+ window.scrollTo(0,y);
+ const m=$(".msgs");if(m)m.scrollTop=m.scrollHeight;
+}
+
+// ===== ACTIONS =====
+const closeModal=()=>{st.modal=null;if(P.newDate!==undefined){P.newDate="";P.newTime="";}};
+const ACT={
+ skip:()=>{finishIntro();return false;},logout:()=>{logout();return false;},
+ mode:v=>{AU.mode=v;},role:v=>{AU.role=v;},
+ nav:v=>{st.book=null;go(v);},go:v=>go(v),book0:()=>{st.book=null;go("book");},
+ menu:()=>{st.menu=!st.menu;},bell:()=>{st.bell=!st.bell;},
+ readall:()=>{st.notifs=st.notifs.map(n=>({...n,read:true}));api("/notifs/read",{method:"POST",body:{}}).catch(()=>{});},
+ clearn:()=>{st.notifs=[];api("/notifs",{method:"DELETE"}).catch(()=>{});toast("Notifications cleared");},
+ markread:v=>{st.notifs=st.notifs.map(n=>String(n.id)===v?{...n,read:true}:n);api("/notifs/read",{method:"POST",body:{id:v}}).catch(()=>{});},
+ close:(v,el,e)=>{if(e.target!==el)return false;closeModal();},x:()=>closeModal(),
+ // discover
+ ftab:v=>{P.tab=v;P.cmp=[];},showloc:()=>{st.modal={t:"loc"};},showcmp:()=>{st.modal={t:"cmp"};},
+ setloc:v=>{st.loc=v;st.modal=null;toast("Location set to "+v);},
+ prof:v=>{const [t,id]=v.split(":");st.modal={t,id};},
+ startbook:v=>{const d=doc(v);st.book={h:d.h,d:d.id};go("book");},
+ // booking
+ bh:v=>{P.h=v;P.d="";},bd:v=>{P.d=v;P.time="";},bdate:v=>{P.date=v;P.time="";},btime:v=>{P.time=v;},
+ bback:()=>{P.step--;},bnext:()=>{P.step++;},
+ bconfirm:()=>{const p=P;api("/appts",{method:"POST",body:{d:P.d,date:P.date,time:P.time,acc:P.acc,reason:P.reason}}).then(r=>{st.appts=r.appts;st.notifs=r.notifs;p.done=r.appt;toast("Appointment confirmed");render();}).catch(e=>toast(e.message));return false;},
+ viewappts:()=>{st.book=null;go("appts");},
+ // appointments
+ atab:v=>{P.tab=v;},
+ pop:v=>{const [t,id]=v.split(":");st.modal={t,id};},
+ ndate:v=>{P.newDate=v;P.newTime="";},ntime:v=>{P.newTime=v;},
+ docancel:()=>{api("/appts/"+st.modal.id,{method:"PATCH",body:{status:"Cancelled"}}).then(r=>{st.appts=r.appts;st.notifs=r.notifs;toast("Appointment cancelled");closeModal();render();}).catch(e=>toast(e.message));return false;},
+ doresched:()=>{api("/appts/"+st.modal.id,{method:"PATCH",body:{date:P.newDate,time:P.newTime}}).then(r=>{st.appts=r.appts;st.notifs=r.notifs;toast("Appointment rescheduled");closeModal();render();}).catch(e=>toast(e.message));return false;},
+ // drive
+ pick:()=>{$("#file").click();return false;},dcat:v=>{P.cat=v;},
+ dview:v=>{const d=st.docs.find(x=>String(x.id)===v);if(d.hasFile){fetchDoc(d).then(u=>window.open(u,"_blank"));return false;}if(d.url){window.open(d.url,"_blank");return false;}st.modal={t:"doc",id:v};},
+ ddown:v=>{const d=st.docs.find(x=>String(x.id)===v);if(d.hasFile){fetchDoc(d).then(u=>{const l=document.createElement("a");l.href=u;l.download=d.name;l.click();});return false;}
+  if(!d.url){toast("Demo documents have no downloadable content.");return false;}
+  const l=document.createElement("a");l.href=d.url;l.download=d.name;l.click();return false;},
+ // assistant
+ clearchat:()=>{P.msgs=initP("ai").msgs;},suggest:v=>{sendMessage(v);return false;},
+ mic:()=>{toast("Voice search is only a visual control in this prototype.");return false;},
+};
+const INP={
+ lang:el=>{st.lang=el.value;writeSaved("pf_lang",st.lang);},
+ lang2:el=>{st.lang=el.value;writeSaved("pf_lang",st.lang);toast("Language changed to "+el.value);},
+ large:()=>{st.look={...st.look,large:!st.look.large};applyLook();},
+ contrast:()=>{st.look={...st.look,contrast:!st.look.contrast};applyLook();},
+ cmp:el=>{const id=el.dataset.v;if(P.cmp.includes(id))P.cmp=P.cmp.filter(x=>x!==id);else if(P.cmp.length>=2)toast("You can compare up to 2 items.");else P.cmp=[...P.cmp,id];},
+ bacc:el=>{const n=el.dataset.v;P.acc=P.acc.includes(n)?P.acc.filter(x=>x!==n):[...P.acc,n];},
+ files:el=>{const fs=[...el.files],cat=P.newCat;el.value="";
+  (async()=>{try{let r;for(const f of fs)r=await api("/docs",{method:"POST",raw:true,body:f,headers:{"x-filename":encodeURIComponent(f.name),"x-category":encodeURIComponent(cat),"Content-Type":"application/octet-stream"}});
+   if(r){st.docs=r.docs;toast("Saved to your Health Drive.");}}catch(e){toast(e.message);}render();})();},
+};
+const FORM={
+ dsearch:()=>{st.query=P.search;go("find");},
+ chat:()=>{sendMessage(P.input);return false;},
+ review:()=>{
+  if(P.text.trim().length<5){toast("Please write a few words first.");return false;}
+  const p=P;api("/reviews",{method:"POST",body:{target:P.target,stars:P.stars,text:P.text}}).then(r=>{st.reviews=r.reviews;p.reviews=r.reviews;p.text="";toast("Review saved");render();}).catch(e=>toast(e.message));return false;},
+ auth:f=>{doAuth(f);return false;},
+};
+document.addEventListener("click",e=>{
+ const el=e.target.closest("[data-a]");if(!el)return;
+ const f=ACT[el.dataset.a];if(f&&f(el.dataset.v,el,e)!==false)render();
+});
+document.addEventListener("input",e=>{
+ const el=e.target,d=el.dataset;
+ if(d.i){if(INP[d.i]){INP[d.i](el);if(d.i!=="files"||true)render();}return;}
+ if(d.p){P[d.p]=el.type==="checkbox"?el.checked:d.n?Number(el.value):el.value;render();}
+});
+document.addEventListener("submit",e=>{
+ e.preventDefault();const f=FORM[e.target.dataset.f];if(f&&f(e.target)!==false)render();
+});
+
+// ===== START =====
+applyLook();
+render();
+if(TOKEN)loadState().catch(()=>{TOKEN=null;writeSaved("pf_token",null);});
+introTimer=setTimeout(finishIntro,4800);
+</script>
+</body>
+</html>
